@@ -1,3 +1,17 @@
+---
+title: "SOK-1004, høst 2024, Mappeoppgave"
+
+author: "[7_31_58]"
+
+format: pdf
+
+echo: false
+
+output: true
+
+editor: visual
+---
+
 # 1. Bakgrunn
 
 I denne oppgaven skal du undersøke ulikhet i inntektsfordelingen i Norge og internasjonalt ved å bruke flere datasett. Dere skal laste ned data fra [OECD](https://stats.oecd.org/index.aspx?r=994307#), [Eurostat](https://ec.europa.eu/eurostat/web/main/data/database) og har tilgang til lokale inntektstall fra GitHub.
@@ -19,18 +33,6 @@ Mappeoppgaven kan besvares individuelt eller i grupper på inntil 3. Grupper anb
 Bruk [Quarto](https://quarto.org/) i RStudio som plattform. Bruk følgende YAML kode øverst i dokumentet
 
 ------------------------------------------------------------------------
-
-title: "SOK-1004, høst 2024, Mappeoppgave"
-
-author: "\[7_31_58\]"
-
-format: pdf
-
-echo: false
-
-output: true
-
-editor: visual
 
 ------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ library(ineq)
 library(eurostat)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #url for hele befolkningen
 url <- "https://sdmx.oecd.org/public/rest/data/OECD.WISE.INE,DSD_WISE_IDD@DF_IDD,1.0/.A.INC_GROSS_GINI+INC_DISP_GINI+INC_MRKT_GINI+D9_1_INC_DISP....METH2012.D_CUR.?startPeriod=2015&endPeriod=2023&dimensionAtObservation=AllDimensions"
 
@@ -70,7 +72,7 @@ data <- readSDMX(url)
 df <- as_tibble(data)
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 df <- df %>% 
   as_tibble() %>% 
   rename(År = TIME_PERIOD, Land = REF_AREA)%>%
@@ -80,13 +82,13 @@ df <- df %>%
 #I denne kodeboksen har vi forandret navn på 2 av variablene til norsk og gjort om kolonnen "År" til en int.
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 df_wide <- df %>%
   pivot_wider(names_from = MEASURE, values_from = obsValue)
 #Her lager vi et nytt datasett i wide format sånn at vi får muligheten til å skille mellom de ulike GINI verdiene og P90/P10. Dette gir oss en enklere måte å plotte figurene grunnet at vi slipper å skille dem fra "MEASURE" i koden.
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #Figur 1
 df_wide %>%
   ggplot(aes(x = År)) +
@@ -118,7 +120,7 @@ df_wide %>%
 #Ved hjelp av tidyverse kan vi plote de 3 ulike GINI variblene for de 3 aldersgruppene slik at vi kan visualisere forskjellen i utviklingen.
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #Figur 2
 df_wide %>%
   ggplot(aes(x = År, y = D9_1_INC_DISP, group = AGE, color = AGE)) +
@@ -142,10 +144,6 @@ df_wide %>%
 #I likhet med figur 1 plotter vi til en figur ved hjelp av tidyverse som gjør det mulig å se utviklingen blant de 3 forskjellige aldersgruppene i forhold til P90/P10
 ```
 
-1.  Figurene består av tre paneler, som hver representerer en aldersgruppe. Gini-målene viser at ulikheten er høyere før skatt (markedsinntekt) enn etter skatt og overføringer (disponibel inntekt), noe som betyr at skattesystemet reduserer ulikheten. Markedsinntekt viser størst ulikhet fordi det er før skatt.
-
-    Disponibel inntekt er lavere fordi skatter og overføringer reduserer ulikheten. Bruttoinntekt ligger mellom de to. Eldre (65+) har lavere ulikhet enn de mellom 18-65 år. Dette skyldes at pensjoner gir jevnere inntekter blant eldre. Skatter og pensjonssystemet reduserer ulikheten, spesielt for eldre som har jevnere pensjonsinntekter. Utviklingen av P90/P10 viser ikke det samme som Gini-målene, og fokuserer bare på forskjellen mellom de rikeste og fattigste 10 %, mens Gini måler ulikhet i hele inntektsfordelingen. For å analysere ulikhet og yrkesstatus trenger vi ekstra data om yrkesstatus, lønn, arbeidstid og ytelser, som sykepenger og arbeidsledighetstrygd.
-
 Da har vi fått en tibble som vi kan bruke til analyse. Det er mulig at dere vil filtrere bort noen observasjoner og ta bort noen kolonner i tibble som dere jobber med. Du kan også vurdere å gi bedre navn til dine variabler.
 
 Vi skal se på Norge mellom 2015-2023, og er interessert i å se hvordan alder påvirker de fire mål på ulikhet som vi har lastet ned.
@@ -168,6 +166,12 @@ Gi en nøyaktig beskrivelse av figuren. og bruk den til å svare på følgende s
 
 -   Vi har data på alder. Hvorvidt kan vi bruke vår analyse for å danne et bilde om ulikhet og yrkesstatus? Hva trenger man av ekstra informasjon (data) for å gjennomføre en slik analyse.
 
+\[Svar under\]
+
+Figurene består av tre paneler, som hver representerer en aldersgruppe. Gini-målene viser at ulikheten er høyere før skatt (markedsinntekt) enn etter skatt og overføringer (disponibel inntekt), noe som betyr at skattesystemet reduserer ulikheten. Markedsinntekt viser størst ulikhet fordi det er før skatt.
+
+Disponibel inntekt er lavere fordi skatter og overføringer reduserer ulikheten. Bruttoinntekt ligger mellom de to. Eldre (65+) har lavere ulikhet enn de mellom 18-65 år. Dette skyldes at pensjoner gir jevnere inntekter blant eldre. Skatter og pensjonssystemet reduserer ulikheten, spesielt for eldre som har jevnere pensjonsinntekter. Utviklingen av P90/P10 viser ikke det samme som Gini-målene, og fokuserer bare på forskjellen mellom de rikeste og fattigste 10 %, mens Gini måler ulikhet i hele inntektsfordelingen. For å analysere ulikhet og yrkesstatus trenger vi ekstra data om yrkesstatus, lønn, arbeidstid og ytelser, som sykepenger og arbeidsledighetstrygd.
+
 ## Oppgave 2 - Er det en kobling mellom inntekt eller inntektsulikhet og livskvalitet?
 
 Det kan være nyttig å kjenne til [World Happiness Report 2024](https://worldhappiness.report/ed/2024/) for å løse denne oppgaven.
@@ -188,7 +192,7 @@ For å svare på disse spørsmålene skal vi bruke data fra Eurostat. For a last
 
 La oss laste ned data om livskvalitet:
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 rm(list=ls()) 
 
 # laste pakken for å lese data samt tidyverse
@@ -225,7 +229,7 @@ bnp_pp <- bnp_pp %>%
 
 Her er det 10 variabler og mange observasjoner. Vi er interessert i et samlet mål for livskvalitet i landene som er med i datasettet, og vi vil bare måle ett enkelt år. Vi velger 2022 ettersom det finnes ikke mål på Gini etter dette hos Eurostat. Følgende kode gir oss det vi trenger, og tar bort samlingen av EU-statene, så velges det kun de kolonnene som vi er interessert i:
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 livs_kval_22 <- livs_kval %>% 
   filter(sex == "Total" &
     TIME_PERIOD == "2022-01-01" &
@@ -237,21 +241,21 @@ livs_kval_22 <- livs_kval %>%
 #Her lager vi et nytt datasett der vi har sortert og filtrert datasettet for livskvalitet
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 gini_ko_22 <- gini_ko %>% 
   filter(grepl("2022", TIME_PERIOD)) %>% 
   rename("gini_koefficient" = values) 
 #Her lager vi et nytt datasett der vi har sortert og filtrert datasettet for gini koefficient
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 gini_ko_22 <- gini_ko_22 %>%
   group_by(geo) %>% 
   summarise(gini_koefficient = mean(gini_koefficient, na.rm = TRUE))
 #Her forandrer vi datasettet til å ha gjennomsnittet for befolkningen i landet.
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 bnp_pp_22 <- bnp_pp %>%
   filter(TIME_PERIOD == "2022-01-01", 
   unit %in% c(
@@ -268,12 +272,12 @@ bnp_pp_22 <- bnp_pp %>%
 
 \(i\) Last ned data fra de andre to tabellene, og lag ett datasett som viser tall som er representative verdier for Gini-koeffisienten, indeks for livskvalitet og BNP per capita for hvert land i datasettet. Du kan koble sammen datasett ved å bruke `inner_join()`: for eksempel `inner_join(data1, data2, by = "geo")`, hvor `data1` og `data2` er dine datasett.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 livs_gini <- inner_join(livs_kval_22, gini_ko_22, by = "geo")
 #Her slår vi sammen datasettene for livskvalitet og Gini
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 livs_gini_bnp <- inner_join(livs_gini, bnp_pp_22, by = "geo")
 #Her slår vi sammen datasettet for BNP inn med datasettetene fra forrige kodeboks
 ```
@@ -288,7 +292,7 @@ I denne oppgaven ser vi 3 tall etter 3 målinger. Det første er GINI Koeffisien
 
 Lag to pene figurer. I den ene plotter du bnp per capita mot livskvalitet, og i den andre Gini mot livskvalitet. Merk gjerne punktene i figuren med landnavn. Her kan R-pakken [ggrepel](https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html) være nyttig. Bruk `geom_smooth(method = lm, se = FALSE)` for å se om det er en sammengeng i mellom variablene.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #Figur 1
 livs_gini_bnp %>% 
   ggplot(aes(x = bnp_per_capita, y = livskvalitet, label = geo)) +
@@ -308,7 +312,7 @@ livs_gini_bnp %>%
 #Her lager vi et plot ved bruk av tidyverse og ggrepel for å få en figur som viser BNP målt opp mot livskvalitet i de forskjellige landene.
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #Figur 2
 livs_gini_bnp %>% 
   ggplot(aes(x = gini_koefficient, y = livskvalitet,
@@ -348,7 +352,7 @@ Dette støttes av grafene, som viser at noen land med lavere BNP per person, som
 
 I filen fra Forelesning 6 har vi data for 2015 om alder, kjønn, bostedskommune, fødeselsår, samt økonomisk data om inntekt, skatt og formue.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 rm(list=ls()) 
 
 # laste pakken for å lese data samt tidyverse
@@ -361,7 +365,7 @@ library(eurostat)
 #For å fjerne datasett vi ikke trenger videre i denne oppgaven
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 
 url <- "https://raw.githubusercontent.com/uit-sok-1004-h24/uit-sok-1004-h24.github.io/main/data/skatt_troms_2015.RDS"
 
@@ -374,7 +378,7 @@ skatt_troms_2015 <- url %>%
 
 1.  Lag en ny variabel som viser inntekt etter skatt, og fjern negative verdier (forklar gjerne hvorfor).
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
      skatt_troms_2015 <- skatt_troms_2015 %>%
       mutate(inntekt_etter_skatt = inntekt - skatt) %>%
       filter(inntekt_etter_skatt >= 0)
@@ -392,7 +396,7 @@ skatt_troms_2015 <- url %>%
 
     I henhold til stav prinsippet deler vi opp oppgave 3 i flere figurer som viser gjennomsnitt og median for de fire ulike punktene i oppgaven.
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
       skatt_sortert <- skatt_troms_2015 %>%
       group_by(kommnr) %>%
       summarise(
@@ -407,7 +411,7 @@ skatt_troms_2015 <- url %>%
     #Her lager vi et nytt datasett som er en sortert versjon av datasettet skatt_troms_2015 og filtrer bort manglende/tomme observasjoner.
     ```
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
 
     skatt_sortert <- skatt_sortert %>% 
       mutate(kommnr = recode(kommnr,'1902' = 'Tromsø',
@@ -485,7 +489,7 @@ skatt_troms_2015 <- url %>%
     #Endrer fra kummunenr til reele kommune navn for enklere visualisering
     ```
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     #Figur til oppgave 3.2
     options(scipen=999)#Vi bruker denne koden sånn at vi ikke skal få opp noe annet enn den fullstendige verdiene på y aksen.
 
@@ -513,7 +517,7 @@ skatt_troms_2015 <- url %>%
 
     Denne figuren sammenligner gjennomsnittlig inntekt etter skatt og median inntekt etter skatt per kommune. Denne figuren viser hvordan inntektene ser ut etter skatt er trukket fra. Igjen, forskjellen mellom gjennomsnitt og median kan gi innsikt i inntektsfordelingen etter skatt.
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     options(scipen=999)#Vi bruker denne koden sånn at vi ikke skal få opp noe annet enn den fullstendige verdiene på y aksen.
 
     skatt_sortert %>% 
@@ -538,7 +542,7 @@ skatt_troms_2015 <- url %>%
 
     Denne figuren sammenligner gjennomsnittlig inntekt og median inntekt per kommune. Hver kommune er representert på x-aksen, mens y-aksen viser inntekt i norske kroner. Hvis forskjellen mellom gjennomsnitt og median er stor, kan dette tyde på at inntektsfordelingen i kommunen er skjev, med noen personer som tjener mye mer enn resten.
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     options(scipen=999)#Vi bruker denne koden sånn at vi ikke skal få opp noe annet enn den fullstendige verdiene på y aksen.
 
     skatt_sortert %>% 
@@ -563,7 +567,7 @@ skatt_troms_2015 <- url %>%
 
     Denne figuren viser gjennomsnittlig skatt og median skatt per kommune. Figuren gir innsikt i hvor mye skatt folk i forskjellige kommuner betaler i gjennomsnitt sammenlignet med medianen
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     options(scipen=999)#Vi bruker denne koden sånn at vi ikke skal få opp noe annet enn den fullstendige verdiene på y aksen.
 
     skatt_sortert %>% 
@@ -592,7 +596,7 @@ skatt_troms_2015 <- url %>%
 
 3.  Bruk pakken ineq for å beregne Ginikoeffisienter for inntekt før og etter skatt for de ulike kommunene i Troms. Vis resultatene i en pen figur.
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     ginikoeff <- skatt_troms_2015 %>%
       group_by(kommnr) %>%
       summarise(
@@ -606,7 +610,7 @@ skatt_troms_2015 <- url %>%
     #Her lager vi et nytt datasett der vi bruker pakken ineq i koden for å beregne Gini-koeffisienten for inntekt og inntekt etter skatt per kommune
     ```
 
-    ```{r}
+    ```{r warning=FALSE, message=FALSE}
     #Figure til oppgave 3.3
     options(scipen=999)#Vi bruker denne koden sånn at vi ikke skal få opp noe annet enn den fullstendige verdiene på y aksen.
 
@@ -628,6 +632,8 @@ skatt_troms_2015 <- url %>%
     Gini-koeffisienten måler økonomisk ulikhet, og i denne figuren sammenligner vi Gini-koeffisienten mellom ulike kommuner. Høyere verdier på Y-aksen indikerer større økonomisk ulikhet i kommunen, mens lavere verdier indikerer en jevnere fordeling av inntekter eller formuer. Hvis en kommune har en høy Gini-koeffisient (nær 1), betyr det at noen få personer har en stor andel av den totale inntekten eller formuen, mens de fleste har mindre. En lav Gini-koeffisient (nær 0) betyr at inntektene eller formuene er jevnere fordelt i kommunen.
 
 4.  Tenk at Troms fylkeskommune har som mål å få til en jevn inntektsfordeling blant sine innbyggere. Hvilke tiltak kan fylkeskommunen vurdere for ulike kommuner basert på dine svar til oppgave 3.2 og 3.3?
+
+\[Svar under\]
 
 Tiltak Troms fylkeskommune kan ta for å få ned inntektsforskjell kan for eksempel være skattelette for lavinntektsgrupper. Dette vil øke inntekten etter skatt for innbyggere med lavere lønninger og gi dem mer økonomisk handlingsrom. Fylkeskommunen kan vurdere ulike former for skattelettelser, slik som økt skattefradrag eller reduserte kommunale avgifter for husholdninger med lav inntekt. Dette tiltaket kan ha en positiv effekt ved å redusere den økonomiske belastningen for de mest sårbare gruppene i fylket. Et annet viktig tiltak for å redusere inntektsforskjeller er å sikre lik tilgang til utdanning og opplæring. Fylkeskommunen kan utvide tilbudet om gratis eller subsidiert videreutdanning og yrkesrettede kurs, spesielt rettet mot personer med lav inntekt eller de som bor i distriktene. Dette vil øke mulighetene for at flere kan kvalifisere seg til bedre betalte jobber og dermed redusere inntektsforskjellene. Tilrettelegging for digital opplæring kan også gjøre det enklere for innbyggerne i distriktene å delta i kompetanseheving uten å måtte flytte. Vi tror at Skattelette men spesielt utdanning kan hjelpe et samfunn, dette inkluderer fylkessamfunnet.
 
